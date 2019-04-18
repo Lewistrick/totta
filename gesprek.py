@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 
 from doc import Document
-from fouten import ExtensionError
+from fouten import ConversionError, ExtensionError
 
 class AudioDocument(Document):
 	"""An audio document, e.g. a conversation.
@@ -85,3 +85,15 @@ class AudioDocument(Document):
 			self.mp3loc = tgt
 		else:
 			raise ExtensionError("Kan niet converteren naar extensie: {}".format(ext))
+
+		errdir = self.path.parent.parent / "errors"
+		errdir.mkdir(parents=True, exist_ok=True) # create the dir it if it doesn't exist
+		errfile = errdir / self.barefn
+		errfile.touch() # create the file if it doesn't exist
+
+		with errfile.open("a") as errstream: # write errors to error file
+			try:
+				subprocess.check_call(command, stderr=errfile)
+			except CalledProcessError as err:
+				raise ConversionError("Foutmelding bij conversie naar {}: {}".format(ext, err))
+
