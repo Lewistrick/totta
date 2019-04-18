@@ -6,7 +6,12 @@ from hit import Hit
 
 class Document(object):
 	def __init__(self, loc):
-		"""Initialize a Document object by a location."""
+		"""Initialize a Document object by a location.
+
+		Contains generic functionality for all types of documents
+		This class should be subclassed when using it specifically for a filetype. An extensive
+		example of this is audiodoc.AudioDocument (use that for phone calls and the like).
+		"""
 		self.path = Path(self.loc)
 		self.hits = []
 
@@ -39,7 +44,7 @@ class Document(object):
 		Arguments:
 			str `method`: 'erickapp' | 'sklearn'
 				- 'erickapp': Calculate a score for each given category. Categories are defined by
-					words and their relevance for the categories. For this, a CatsRel object is
+					words and their relevance for the categories. For this, a Wordlist object is
 					used that should be passed using kwargs; this should have a pandas.DataFrame
 					`df` attribute that contains a DataFrame with these columns:
 						- word: the words (or ngrams) used to classify
@@ -48,7 +53,7 @@ class Document(object):
 					A score `s` for cat `c` is calculated as follows:
 						s = sum_w(r_w * c_w) * n / d
 					This means: sum for all words that occur in the document AND have a score in
-						the catsrel file, and correct by some factors.
+						the wordlist file, and correct by some factors.
 						- r_w is the score for each word in that category
 						- c_w is the confidence of the word: ~P(correct recognition result)
 						- n is the number of *unique* words in the document

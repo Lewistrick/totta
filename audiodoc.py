@@ -7,6 +7,7 @@ class AudioDocument(Document):
 	"""An audio document, e.g. a conversation.
 
 	Subclass of Document (that contains a lot of handy methods generic to all document types).
+	This class should be subclassed when using it specifically for a customer.
 	"""
 	cfg = ConfigParser().read("config.ini")
 	ffmpeg = cfg["dependencies"]["ffmpeg"]
